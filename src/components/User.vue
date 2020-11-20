@@ -1,0 +1,71 @@
+<template>
+    <div>
+        <table>
+            <tr>
+                <td>
+                    用户名
+                </td>
+                <td>
+                    角色
+                </td>
+                <td>
+                    时间
+                </td>
+            </tr>
+             <tr v-for="(item,key) in list" :key="key">
+                <td>
+                    {{item.username}}
+                </td>
+                <td>
+                    {{item.role_name}}
+                </td>
+                <td>
+                    {{item.create_time}}
+                </td>
+            </tr>
+        </table>
+        <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="total"
+            :page-size="pagesize"
+            @current-change="change"
+            >
+        </el-pagination>
+    </div>
+</template>
+<script>
+export default {
+    name:"User",
+    data(){
+        return{
+            list:[],
+            pagesize:3,
+            total:0
+        }
+    },
+    methods:{
+        change(nowpage){
+            this.getdata(nowpage)
+        },
+        getdata(nowpage){
+            this.$http.get("/users?pagenum="+nowpage+"&pagesize="+this.pagesize).then((res)=>{
+                console.log(res)
+                this.list=res.data.data.users;
+                this.total=res.data.data.total;
+            })
+        }
+    },
+    mounted(){
+        this.getdata(1)
+    }
+}
+</script>
+<style lang="scss">
+table{
+    width:400px;
+    tr{
+        line-height:40px !important; 
+    }
+}
+</style>
